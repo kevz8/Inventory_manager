@@ -3,8 +3,13 @@ package model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import persistence.Writable;
+
 // A class representing a inventory with a list of items
-public class Inventory {
+public class Inventory implements Writable {
     private List<Item> listOfItems;
 
     // EFFECTS: Constructs an inventory with no items added
@@ -48,5 +53,23 @@ public class Inventory {
     // EFFECTS: Gets the item given the item number
     public Item getInventoryItem(int num) {
         return getInventory().get(num - 1);
+    }
+
+    // EFFECTS: Saves current inventory items to jsonArray
+    @Override
+    public JSONArray toJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Item item : getInventory()) {
+            JSONObject json = new JSONObject();
+            json.put("name", item.getName());
+            json.put("quantity", item.getQuantity());
+            json.put("capacity", item.getCapacity());
+            json.put("restock threshold", item.getRestockThreshold());
+            json.put("last restock", item.getLastRestockdate());
+            jsonArray.put(json);
+        }
+
+        return jsonArray;
     }
 }
